@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Manifiesto de la PWA - define cómo se comporta la aplicación al ser instalada.
+        const manifest = {
+            name: "Menú Digital Elegante",
+            short_name: "Menú",
+            description: "Menú digital con pedidos rápidos y promociones.",
+            start_url: "/",
+            display: "standalone",
+            background_color: "#F4F4F4",
+            theme_color: "#2C3E50",
+            icons: [
+                {
+                    src: "https://placehold.co/192x192/2C3E50/EAEAEA?text=M",
+                    sizes: "192x192",
+                    type: "image/png"
+                },
+                {
+                    src: "https://placehold.co/512x512/2C3E50/EAEAEA?text=M",
+                    sizes: "512x512",
+                    type: "image/png"
+                }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        const link = document.createElement("link");
+        link.rel = "manifest";
+        link.href = manifestURL;
+        document.head.appendChild(link);
+    </script>
+    <style>
+        /* Estilos generales y de tipografía para un look elegante */
+        :root {
+            --primary-color: #2C3E50; /* Gris carbón profundo */
+            --secondary-color: #ECF0F1; /* Gris claro suave */
+            --accent-color: #B28F46; /* Dorado ocre para detalles */
+            --text-color: #34495E; /* Gris oscuro para el texto */
+            --bg-color: #F4F4F4; /* Fondo gris muy claro */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Estilos del encabezado */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-top: 40px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        /* Estilos para promociones más elegantes */
+        .promotions {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos de la lista de menú */
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .item-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .item-description {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .add-to-order-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-order-btn:hover {
+            background-color: #4C5F70;
+        }
+        
+        /* Estilos para el resumen del pedido */
+        .order-summary {
+            background-color: var(--secondary-color);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .order-summary-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-total {
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-align: right;
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background-color 0.3s ease;
+        }
+
+        .place-order-btn:hover {
+            background-color: #2980B9;
+        }
+        
+        /* Estilos para el mensaje de notificación */
+        .notification-box {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        /* Media queries para adaptar el diseño a diferentes tamaños de pantalla */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .menu-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .item-image {
+                width: 100%;
+                height: auto;
+                max-height: 150px;
+            }
+            .item-details {
+                text-align: center;
+            }
+            .add-to-order-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Lógica para registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado:', registration);
+                        showMessage('Menú listo para usar sin conexión.');
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar Service Worker:', error);
+                        showMessage('Error al preparar el menú para funcionar sin conexión.');
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Contenido de la interfaz de usuario -->
+    <header>
+        <h1>TUTAINA</h1>
+    </header>
+
+    <div class="container">
+        <!-- Sección de promociones -->
+        <div class="promotions" id="promotion-banner">
+            Elegancia en cada bocado. Sabor en cada detalle.
+        </div>
+        
+        <!-- Sección del menú -->
+        <h2>Nuestro Menú</h2>
+        <div class="menu-list" id="menu-list">
+            <!-- Los elementos del menú se renderizarán aquí -->
+        </div>
+
+        <!-- Sección de resumen del pedido -->
+        <div class="order-summary" id="order-summary-section">
+            <h2>Tu Pedido</h2>
+            <ul class="order-summary-list" id="order-summary-list">
+                <!-- Los elementos del pedido se renderizarán aquí -->
+            </ul>
+            <p class="order-total" id="order-total">Total: COP$0.00</p>
+            <button class="place-order-btn" id="place-order-btn">Realizar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Caja de notificaciones -->
+    <div id="notification-box" class="notification-box"></div>
+
+    <script>
+        // Lógica de la aplicación
+        const menuData = [
+            {
+                id: 1,
+                name: "Hamburguesa Clásica",
+                description: "Carne a la parrilla, lechuga, tomate y queso.",
+                price: 15000,
+                image: "https://placehold.co/80x80/FF6347/fff?text=H"
+            },
+            {
+                id: 2,
+                name: "Pizza Pepperoni",
+                description: "Salsa de tomate, mozzarella y pepperoni.",
+                price: 22500,
+                image: "https://placehold.co/80x80/FFA07A/fff?text=P"
+            },
+            {
+                id: 3,
+                name: "Tacos al Pastor",
+                description: "Tacos de cerdo marinado con piña y cilantro.",
+                price: 18000,
+                image: "https://placehold.co/80x80/DAA520/fff?text=T"
+            },
+            {
+                id: 4,
+                name: "Ensalada César",
+                description: "Lechuga, crutones, queso parmesano y aderezo César.",
+                price: 12000,
+                image: "https://placehold.co/80x80/9ACD32/fff?text=E"
+            },
+            {
+                id: 5,
+                name: "Jugo Natural",
+                description: "Variedad de frutas frescas.",
+                price: 5000,
+                image: "https://placehold.co/80x80/20B2AA/fff?text=J"
+            }
+        ];
+
+        let currentOrder = [];
+
+        const menuList = document.getElementById('menu-list');
+        const orderSummaryList = document.getElementById('order-summary-list');
+        const orderTotalDisplay = document.getElementById('order-total');
+        const notificationBox = document.getElementById('notification-box');
+
+        // Función para mostrar notificaciones
+        function showMessage(message) {
+            notificationBox.textContent = message;
+            notificationBox.style.display = 'block';
+            setTimeout(() => {
+                notificationBox.style.display = 'none';
+            }, 3000);
+        }
+
+        // Renderiza los elementos del menú en la página
+        function renderMenu() {
+            menuList.innerHTML = ''; // Limpiar el menú antes de renderizar
+            menuData.forEach(item => {
+                const menuItemDiv = document.createElement('div');
+                menuItemDiv.classList.add('menu-item');
+                menuItemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="item-image">
+                    <div class="item-details">
+                        <p class="item-name">${item.name}</p>
+                        <p class="item-description">${item.description}</p>
+                        <p class="item-price">COP$${item.price.toLocaleString('es-CO')}</p>
+                    </div>
+                    <button class="add-to-order-btn" data-id="${item.id}">Añadir</button>
+                `;
+                menuList.appendChild(menuItemDiv);
+            });
+
+            // Agrega el evento de clic a los botones "Añadir"
+            document.querySelectorAll('.add-to-order-btn').forEach(button => {
+                button.addEventListener('click', event => {
+                    const itemId = parseInt(event.target.getAttribute('data-id'));
+                    addToOrder(itemId);
+                });
+            });
+        }
+
+        // Agrega un ítem al pedido
+        function addToOrder(itemId) {
+            const item = menuData.find(i => i.id === itemId);
+            if (item) {
+                // Si el item ya está en el pedido, aumenta la cantidad
+                const existingItem = currentOrder.find(i => i.id === itemId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    currentOrder.push({ ...item, quantity: 1 });
+                }
+                saveOrder();
+                renderOrderSummary();
+                showMessage(`${item.name} añadido al pedido.`);
+            }
+        }
+
+        // Renderiza el resumen del pedido
+        function renderOrderSummary() {
+            orderSummaryList.innerHTML = '';
+            let total = 0;
+            currentOrder.forEach(item => {
+                const li = document.createElement('li');
+                li.classList.add('order-item');
+                const subtotal = item.price * item.quantity;
+                li.innerHTML = `
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>COP$${subtotal.toLocaleString('es-CO')}</span>
+                `;
+                orderSummaryList.appendChild(li);
+                total += subtotal;
+            });
+            orderTotalDisplay.textContent = `Total: COP$${total.toLocaleString('es-CO')}`;
+
+            // Oculta el resumen si el pedido está vacío
+            const orderSummarySection = document.getElementById('order-summary-section');
+            if (currentOrder.length === 0) {
+                orderSummarySection.style.display = 'none';
+            } else {
+                orderSummarySection.style.display = 'block';
+            }
+        }
+
+        // Guarda el pedido en el Local Storage
+        function saveOrder() {
+            localStorage.setItem('menu-order', JSON.stringify(currentOrder));
+        }
+
+        // Carga el pedido desde el Local Storage
+        function loadOrder() {
+            const savedOrder = localStorage.getItem('menu-order');
+            if (savedOrder) {
+                currentOrder = JSON.parse(savedOrder);
+            }
+        }
+
+        // Simula la realización del pedido
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        placeOrderBtn.addEventListener('click', () => {
+            if (currentOrder.length > 0) {
+                showMessage("¡Pedido enviado! Preparando tu comida.");
+                currentOrder = [];
+                saveOrder();
+                renderOrderSummary();
+            } else {
+                showMessage("Tu pedido está vacío.");
+            }
+        });
+
+        // Inicializa la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrder();
+            renderMenu();
+            renderOrderSummary();
+        });
+    </script>
+</body>
+</html>
